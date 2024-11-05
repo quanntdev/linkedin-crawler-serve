@@ -1,0 +1,9 @@
+fastapi
+pydantic
+PyPDF2
+google-generativeai
+python-dotenv
+typing-extensions
+requests
+beautifulsoup4
+pyppeteer
