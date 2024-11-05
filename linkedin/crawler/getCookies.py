@@ -33,7 +33,7 @@ async def login():
     page = await browser.newPage()
 
     print("Load Login page")
-    await page.goto("https://www.linkedin.com/login/vi?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin")
+    await page.goto("https://www.linkedin.com/login")
     await page.waitForSelector('body')
 
     await page.type("#username", LINKEDIN_USERNAME)
