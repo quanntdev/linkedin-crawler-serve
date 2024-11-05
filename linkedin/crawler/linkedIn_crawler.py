@@ -67,7 +67,7 @@ class LinkedIn:
                 button.decompose()
             description_value = description_span.text.strip()
 
-        skills = await self.generateSkillFromStr(description_value)
+        # skills = await self.generateSkillFromStr(description_value)
 
         payload = {
             "job_url": job_url,
@@ -79,7 +79,7 @@ class LinkedIn:
             "description_raw": str(description_span),
             "source": self.source,
             "jobId": jobId,
-            "skills": skills
+            # "skills": skills
         }
         return payload
 
