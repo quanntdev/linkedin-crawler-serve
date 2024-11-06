@@ -7,7 +7,7 @@ import uuid
 current_directory = os.path.dirname(os.path.abspath(__file__))
 COOKIES_PATH = os.path.join(current_directory, '../cookies/linkedin_cookies.json')
 PDF_PATH = "./cv/77264049-73f6-4600-bdcf-67b5de8f55a9.pdf"
-CAPTURE_PATH = os.path.join(current_directory, 'capture') 
+CAPTURE_PATH = "./capture"
 
 async def load_cookies(page):
     try:
