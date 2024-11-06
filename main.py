@@ -78,5 +78,6 @@ async def show_image(imgId: str):
     image_path = os.path.join(CAPTURE_FOLDER,  f"{imgId}.png")
     if not os.path.isfile(image_path):
         raise HTTPException(status_code=404, detail="Image not found")
-    return FileResponse(image_path, media_type="image/jpeg", filename=imgId)
+    media_type = "image/jpeg"
+    return FileResponse(image_path, media_type=media_type, headers={"Content-Disposition": "inline"})
 
