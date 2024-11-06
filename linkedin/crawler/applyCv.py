@@ -94,7 +94,7 @@ async def apply_to_job(url, browser):
 async def main():
     browser = await launch(headless=False, args=['--no-sandbox', '--disable-setuid-sandbox'])
 
-    job_url = 'https://www.linkedin.com/jobs/search/?currentJobId=3899258490&distance=25&geoId=104195383&keywords=remote&origin=JOBS_HOME_SEARCH_CARDS'
+    job_url = 'https://www.linkedin.com/jobs/collections/hiring-in-network/?currentJobId=4060316483&origin=SOCIAL_SEEKING_HIRING_IN_NETWORK_IN_APP_NOTIFICATION&originToLandingJobPostings=4065492842'
     await apply_to_job(job_url, browser)
 
 asyncio.run(main())
