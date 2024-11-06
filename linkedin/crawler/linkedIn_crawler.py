@@ -116,12 +116,16 @@ class LinkedIn:
     def getJobId(self, url):
         parsed_url = urlparse(url)
         query_params = parse_qs(parsed_url.query)
-        query_params = parse_qs(parsed_url.query)
+
         if "currentJobId" in query_params:
             return query_params["currentJobId"][0]
+
+        parsed_url = parsed_url._replace(query="")
+
         path_parts = parsed_url.path.strip("/").split("-")
         if path_parts[-1].isdigit():
             return path_parts[-1]
+
         return None
 
     async def generateSkillFromStr(self, str):
