@@ -14,6 +14,8 @@ class URLRequest(BaseModel):
     url: str
 
 UPLOAD_FOLDER = "./cv"
+CAPTURE_FOLDER = "./capture"
+
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.get("/health")
@@ -69,4 +71,12 @@ async def upload_pdf(file: UploadFile = File(...)):
 @app.get("/generate/skill/{pdf_id}")
 async def download_pdf(pdf_id: str):
     return await generateSkillFromCV(pdf_id)
+
+
+@app.get("/capture/{imgId}")
+async def show_image(imgId: str):
+    image_path = os.path.join(CAPTURE_FOLDER, imgId)
+    if not os.path.isfile(image_path):
+        raise HTTPException(status_code=404, detail="Image not found")
+    return FileResponse(image_path, media_type="image/jpeg", filename=imgId)
 
