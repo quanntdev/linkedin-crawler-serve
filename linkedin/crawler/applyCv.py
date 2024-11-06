@@ -17,11 +17,18 @@ async def load_cookies(page):
         print("Không tìm thấy file cookies, cần đăng nhập lần đầu.")
 
 async def click_if_exists(page, selector):
-    """Click a button if it exists on the page."""
+    """Click a button if it exists and is clickable on the page."""
     button = await page.querySelector(selector)
+    print("button")
+    print(button)
     if button:
-        await button.click()
-        print(f"Đã ấn vào nút có class '{selector}'")
+        # Check if the button is enabled and visible
+        is_enabled = await page.evaluate('(button) => button && !button.disabled && button.offsetParent !== null', button)
+        if is_enabled:
+            await button.click()
+            print(f"Đã ấn vào nút có class '{selector}'")
+        else:
+            print(f"Nút với class '{selector}' không thể ấn được.")
     else:
         print(f"Không tìm thấy nút với class '{selector}'")
 
@@ -38,7 +45,10 @@ async def next_action(page):
     await page.click('button.artdeco-button.artdeco-button--2.artdeco-button--primary.ember-view')
 
 async def fill_inputs(page):
+     
+    print("load input typing ....")
     input_elements = await page.querySelectorAll('input.artdeco-text-input--input')
+    # print("load input typing ....")
     for input_element in input_elements:
         await input_element.focus()
         await input_element.click({'clickCount': 3})
@@ -82,7 +92,7 @@ async def apply_to_job(url, browser):
     print("Hoàn thành tất cả các bước và modal đã đóng.")
 
 async def main():
-    browser = await launch(headless=True, args=['--no-sandbox', '--disable-setuid-sandbox'])
+    browser = await launch(headless=False, args=['--no-sandbox', '--disable-setuid-sandbox'])
 
     job_url = 'https://www.linkedin.com/jobs/search/?currentJobId=3899258490&distance=25&geoId=104195383&keywords=remote&origin=JOBS_HOME_SEARCH_CARDS'
     await apply_to_job(job_url, browser)
