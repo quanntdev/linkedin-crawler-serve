@@ -82,7 +82,7 @@ async def apply_to_job(url, browser):
     print("Hoàn thành tất cả các bước và modal đã đóng.")
 
 async def main():
-    browser = await launch(headless=False)
+    browser = await launch(headless=True, args=['--no-sandbox', '--disable-setuid-sandbox'])
 
     job_url = 'https://www.linkedin.com/jobs/search/?currentJobId=3899258490&distance=25&geoId=104195383&keywords=remote&origin=JOBS_HOME_SEARCH_CARDS'
     await apply_to_job(job_url, browser)
