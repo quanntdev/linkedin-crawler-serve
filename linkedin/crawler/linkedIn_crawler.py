@@ -122,10 +122,15 @@ class LinkedIn:
 
         parsed_url = parsed_url._replace(query="")
 
+        print(parsed_url)
+
         path_parts = parsed_url.path.strip("/").split("-")
         if path_parts[-1].isdigit():
             return path_parts[-1]
 
+        path_parts2NdCheck = parsed_url.path.strip("/").split("/")
+        if path_parts2NdCheck[-1].isdigit():
+            return path_parts2NdCheck[-1]
         return None
 
     async def generateSkillFromStr(self, str):
