@@ -5,7 +5,7 @@ import os
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 COOKIES_PATH = os.path.join(current_directory, '../cookies/linkedin_cookies.json')
-PDF_PATH = "./cv/quan.pdf"
+PDF_PATH = "./cv/77264049-73f6-4600-bdcf-67b5de8f55a9.pdf"
 
 async def load_cookies(page):
     try:
@@ -81,7 +81,7 @@ async def apply_to_job(url, browser):
 async def main():
     browser = await launch(headless=False)
 
-    job_url = 'https://www.linkedin.com/jobs/search/?currentJobId=3940817532&distance=25&geoId=103644278&keywords=nodejs&origin=JOBS_HOME_SEARCH_CARDS'
+    job_url = 'https://www.linkedin.com/jobs/search/?currentJobId=3899258490&distance=25&geoId=104195383&keywords=remote&origin=JOBS_HOME_SEARCH_CARDS'
     await apply_to_job(job_url, browser)
 
 asyncio.run(main())
