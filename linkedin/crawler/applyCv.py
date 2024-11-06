@@ -107,7 +107,6 @@ async def apply_to_job(url, browser):
 
 async def main():
     browser = await launch(headless=True, args=['--no-sandbox', '--disable-setuid-sandbox'])
-
     job_url = 'https://www.linkedin.com/jobs/collections/hiring-in-network/?currentJobId=4064809686&origin=SOCIAL_SEEKING_HIRING_IN_NETWORK_IN_APP_NOTIFICATION&originToLandingJobPostings=4065492842'
     await apply_to_job(job_url, browser)
     await browser.close()
