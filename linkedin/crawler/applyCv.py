@@ -59,7 +59,9 @@ async def fill_inputs(page):
     for select_element in select_elements:
         options = await select_element.querySelectorAll('option')
         if options:
-            await select_element.selectOption(options[-1].getProperty('value'))
+            last_option_value = await (await options[-1].getProperty('value')).jsonValue()
+            await page.evaluate('(element, value) => element.value = value', select_element, last_option_value)
+            await page.evaluate('(element) => element.dispatchEvent(new Event("change"))', select_element)
 
     print("Đã select options")
 
@@ -73,11 +75,10 @@ async def apply_to_job(url, browser):
     print("Load URL")
     print(url)
 
-    if await page.querySelector('button.jobs-apply-button.artdeco-button.artdeco-button--3.artdeco-button--primary.ember-view') is not None:
-        await page.waitForSelector('button.jobs-apply-button.artdeco-button.artdeco-button--3.artdeco-button--primary.ember-view', {'timeout': 10000})
-        await asyncio.sleep(2)
-        await page.click('button.jobs-apply-button.artdeco-button.artdeco-button--3.artdeco-button--primary.ember-view')
-        print("Đã ấn vào nút 'Easy Apply' với lớp đầu tiên.")
+    await page.waitForSelector('button.jobs-apply-button.artdeco-button.artdeco-button--3.artdeco-button--primary.ember-view', {'timeout': 10000})
+    await asyncio.sleep(2)
+    await page.click('button.jobs-apply-button.artdeco-button.artdeco-button--3.artdeco-button--primary.ember-view')
+    print("Đã ấn vào nút 'Easy Apply' với lớp đầu tiên.")
 
 
     await page.waitForSelector('.artdeco-modal__content', {'timeout': 20000})
@@ -99,7 +100,7 @@ async def apply_to_job(url, browser):
     print("Hoàn thành tất cả các bước và modal đã đóng.")
 
 async def main():
-    browser = await launch(headless=True, args=['--no-sandbox', '--disable-setuid-sandbox'])
+    browser = await launch(headless=False, args=['--no-sandbox', '--disable-setuid-sandbox'])
 
     job_url = 'https://www.linkedin.com/jobs/collections/hiring-in-network/?currentJobId=4060316483&origin=SOCIAL_SEEKING_HIRING_IN_NETWORK_IN_APP_NOTIFICATION&originToLandingJobPostings=4065492842'
     await apply_to_job(job_url, browser)
