@@ -29,7 +29,8 @@ async def load_cookies(page):
 
 
 async def login():
-    browser = await launch(headless=False)
+    browser = await launch(headless=True, args=['--no-sandbox', '--disable-setuid-sandbox'])
+
     page = await browser.newPage()
 
     print("Load Login page")
