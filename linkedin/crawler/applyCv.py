@@ -2,10 +2,12 @@ import asyncio
 import json
 from pyppeteer import launch
 import os
+import uuid
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 COOKIES_PATH = os.path.join(current_directory, '../cookies/linkedin_cookies.json')
 PDF_PATH = "./cv/77264049-73f6-4600-bdcf-67b5de8f55a9.pdf"
+CAPTURE_PATH = os.path.join(current_directory, 'capture') 
 
 async def load_cookies(page):
     try:
@@ -99,10 +101,16 @@ async def apply_to_job(url, browser):
 
     print("Hoàn thành tất cả các bước và modal đã đóng.")
 
+    screenshot_path = os.path.join(CAPTURE_PATH, f"{uuid.uuid4()}.png")
+    await page.screenshot({'path': screenshot_path})
+    print(f"Đã chụp ảnh màn hình và lưu vào: {screenshot_path}")
+
 async def main():
     browser = await launch(headless=True, args=['--no-sandbox', '--disable-setuid-sandbox'])
 
     job_url = 'https://www.linkedin.com/jobs/collections/hiring-in-network/?currentJobId=4060316483&origin=SOCIAL_SEEKING_HIRING_IN_NETWORK_IN_APP_NOTIFICATION&originToLandingJobPostings=4065492842'
     await apply_to_job(job_url, browser)
+    await browser.close()
+    print("Close Chrome")
 
 asyncio.run(main())
