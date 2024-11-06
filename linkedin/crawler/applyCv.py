@@ -92,7 +92,7 @@ async def apply_to_job(url, browser):
     print("Hoàn thành tất cả các bước và modal đã đóng.")
 
 async def main():
-    browser = await launch(headless=False, args=['--no-sandbox', '--disable-setuid-sandbox'])
+    browser = await launch(headless=True, args=['--no-sandbox', '--disable-setuid-sandbox'])
 
     job_url = 'https://www.linkedin.com/jobs/collections/hiring-in-network/?currentJobId=4060316483&origin=SOCIAL_SEEKING_HIRING_IN_NETWORK_IN_APP_NOTIFICATION&originToLandingJobPostings=4065492842'
     await apply_to_job(job_url, browser)
