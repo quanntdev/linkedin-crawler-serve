@@ -75,7 +75,7 @@ async def download_pdf(pdf_id: str):
 
 @app.get("/capture/{imgId}")
 async def show_image(imgId: str):
-    image_path = os.path.join(CAPTURE_FOLDER, imgId)
+    image_path = os.path.join(CAPTURE_FOLDER,  f"{imgId}.png")
     if not os.path.isfile(image_path):
         raise HTTPException(status_code=404, detail="Image not found")
     return FileResponse(image_path, media_type="image/jpeg", filename=imgId)
