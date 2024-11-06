@@ -49,10 +49,13 @@ async def fill_inputs(page):
 async def apply_to_job(url, browser):
     page = await browser.newPage()
     await page.setViewport({"width": 1920, "height": 1080})
-
+    print("Load Cookies")
     await load_cookies(page)
 
     await page.goto(url)
+    print("Load URL")
+    print(url)
+
     if await page.querySelector('button.jobs-apply-button.artdeco-button.artdeco-button--3.artdeco-button--primary.ember-view') is not None:
         await page.waitForSelector('button.jobs-apply-button.artdeco-button.artdeco-button--3.artdeco-button--primary.ember-view', {'timeout': 10000})
         await asyncio.sleep(2)
