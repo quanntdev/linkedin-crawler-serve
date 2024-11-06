@@ -45,16 +45,23 @@ async def next_action(page):
     await page.click('button.artdeco-button.artdeco-button--2.artdeco-button--primary.ember-view')
 
 async def fill_inputs(page):
-     
+
     print("load input typing ....")
     input_elements = await page.querySelectorAll('input.artdeco-text-input--input')
-    # print("load input typing ....")
     for input_element in input_elements:
         await input_element.focus()
         await input_element.click({'clickCount': 3})
         await input_element.press('Backspace')
         await input_element.type('5')
-    print("Đã điền giá trị '3' vào tất cả các input.")
+    print("Đã điền giá trị  vào tất cả các input.")
+
+    select_elements = await page.querySelectorAll('select')
+    for select_element in select_elements:
+        options = await select_element.querySelectorAll('option')
+        if options:
+            await select_element.selectOption(options[-1].getProperty('value'))
+
+    print("Đã select options")
 
 async def apply_to_job(url, browser):
     page = await browser.newPage()
