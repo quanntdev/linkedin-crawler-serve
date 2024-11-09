@@ -3,12 +3,24 @@ from fastapi.responses import JSONResponse, FileResponse
 from helper.response import Success, Error
 from pydantic import BaseModel
 from service.linkedin import getJobDetail, generateSkillFromCV
+from linkedin.crawler.applyCv import LinkedInJobApplicationService
 import os
 import shutil
 import uuid
 import PyPDF2
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 class URLRequest(BaseModel):
     url: str
@@ -17,6 +29,12 @@ UPLOAD_FOLDER = "./cv"
 CAPTURE_FOLDER = "./capture"
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+job_application_service = LinkedInJobApplicationService()
+
+class JobApplicationRequest(BaseModel):
+    cv_id: str
+    job_url: str
 
 @app.get("/health")
 async def healthChecker():
@@ -81,3 +99,17 @@ async def show_image(imgId: str):
     media_type = "image/jpeg"
     return FileResponse(image_path, media_type=media_type, headers={"Content-Disposition": "inline"})
 
+
+@app.post("/apply-job/")
+async def apply_job(request: JobApplicationRequest):
+    try:
+        screenshot_uid = await job_application_service.apply_to_job(request.job_url, request.cv_id)
+        if screenshot_uid:
+            return {"status": "success", "screenshot_uid": screenshot_uid}
+        else:
+            # raise HTTPException(status_code=500, detail="Failed to complete the job application")
+            return Error("Failed to complete the job application.", 500)
+    except Exception as e:
+        error_message = str(e)
+        print(error_message)
+        return Error(error_message, 500)

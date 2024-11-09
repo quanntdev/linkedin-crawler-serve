@@ -29,15 +29,13 @@ async def load_cookies(page):
 
 
 async def login():
-    browser = await launch(headless=True, args=['--no-sandbox', '--disable-setuid-sandbox'])
+    browser = await launch(headless=False, args=['--no-sandbox', '--disable-setuid-sandbox'])
 
     page = await browser.newPage()
 
     print("Load Login page")
     await page.goto("https://www.linkedin.com/login")
     await page.waitForSelector('body')
-
-    await page.screenshot({'path': './capture/login_page.png'})
 
     await page.type("#username", LINKEDIN_USERNAME)
     await page.type("#password", LINKEDIN_PASSWORD)

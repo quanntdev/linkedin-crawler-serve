@@ -44,6 +44,14 @@ class LinkedIn:
         location_value = ""
         description_value = ""
         description_span = ""
+        easy_apply = False
+
+        easy_apply_container = soup.find('div', class_='top-card-layout__cta-container flex flex-wrap mt-0.5 papabear:mt-0 ml-[-12px]')
+        if easy_apply_container:
+            easy_apply_button = easy_apply_container.find("button", class_='top-card-layout__cta mt-2 ml-1.5 h-auto babybear:flex-auto top-card-layout__cta--secondary btn-md btn-secondary save-job-modal-outlet')
+            if easy_apply_button and easy_apply_button.find_previous_sibling(class_='apply-button apply-button--default top-card-layout__cta mt-2 ml-1.5 h-auto babybear:flex-auto top-card-layout__cta--primary btn-md btn-primary'):
+                easy_apply = True
+
 
         job_link = soup.find('a', {'data-tracking-control-name': 'public_jobs_topcard-title'})
         if job_link:
@@ -52,10 +60,13 @@ class LinkedIn:
 
         company_link = soup.find('a', {'data-tracking-control-name': 'public_jobs_topcard_logo'})
         if company_link:
-            company_url = job_link['href']
             img_tag = company_link.find('img')
             if img_tag:
                 company_img_url = img_tag['data-delayed-url']
+
+        company_src_link = soup.find('a', {'data-tracking-control-name': 'public_jobs_topcard-org-name'})
+        if company_src_link:
+            company_url = company_src_link['href']
 
         location_span = soup.find('span', class_='topcard__flavor topcard__flavor--bullet')
         if location_span:
@@ -79,7 +90,8 @@ class LinkedIn:
             "description_raw": str(description_span),
             "source": self.source,
             "jobId": jobId,
-            "skills": skills
+            "skills": skills,
+            "easy_apply": easy_apply
         }
         return payload
 

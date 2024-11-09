@@ -1,2 +1,6 @@
 __pycache__/
 .env
+capture/
+cv/
+.DS_Store
+linkedin/cookies/linkedin_cookies.json
