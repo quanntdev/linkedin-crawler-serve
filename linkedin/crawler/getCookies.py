@@ -27,7 +27,6 @@ async def load_cookies(page):
     except FileNotFoundError:
         print("Không tìm thấy file cookies, cần đăng nhập lần đầu.")
 
-
 async def login():
     browser = await launch(headless=True, args=['--no-sandbox', '--disable-setuid-sandbox'])
 
@@ -43,6 +42,18 @@ async def login():
 
     await page.waitForNavigation()
 
+    try:
+        # Wait for the 2FA input field to appear, with a timeout of 10 seconds
+        await page.waitForSelector('input[name="pin"]', timeout=10000)
+        print("2FA is required. Please enter the 2FA code.")
+        code = input("Please enter the 2FA code: ")
+        await page.type('input[name="pin"]', code)
+        await page.click('button[type="submit"]')  
+        await page.waitForNavigation()
+    except asyncio.TimeoutError:
+        print("No 2FA required, proceeding without it.")
+
+    await asyncio.sleep(3)
     await save_cookies(page)
     await browser.close()
 
