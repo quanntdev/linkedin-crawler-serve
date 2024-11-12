@@ -4,6 +4,8 @@ from pyppeteer import launch
 import os
 import uuid
 from helper.response import Success, Error
+from urllib.parse import urlparse, parse_qs
+
 
 class LinkedInJobApplicationService:
     def __init__(self):
@@ -101,12 +103,35 @@ class LinkedInJobApplicationService:
                 print("Checkbox not found within div element.")
         print("Finished selecting checkboxes.")
 
+    def getJobId(self, url):
+        parsed_url = urlparse(url)
+        query_params = parse_qs(parsed_url.query)
+
+        if "currentJobId" in query_params:
+            return query_params["currentJobId"][0]
+
+        parsed_url = parsed_url._replace(query="")
+
+        print(parsed_url)
+
+        path_parts = parsed_url.path.strip("/").split("-")
+        if path_parts[-1].isdigit():
+            return path_parts[-1]
+
+        path_parts2NdCheck = parsed_url.path.strip("/").split("/")
+        if path_parts2NdCheck[-1].isdigit():
+            return path_parts2NdCheck[-1]
+        return None
+
 
     async def apply_to_job(self, job_url, file_id):
         browser = await launch(headless=True, args=['--no-sandbox', '--disable-setuid-sandbox'])
         page = await browser.newPage()
         await page.setViewport({"width": 1920, "height": 1080})
         await self.load_cookies(page)
+        newId = self.getJobId(job_url)
+        url = f"https://www.linkedin.com/jobs/collections/recommended/?currentJobId={newId}"
+        print(url)
 
         pdf_path = f"./cv/{file_id}.pdf"
         if not os.path.exists(pdf_path):
@@ -114,8 +139,8 @@ class LinkedInJobApplicationService:
             raise FileNotFoundError(f"File not found: {pdf_path}")
 
         try:
-            await page.goto(job_url)
-            print("URL Loaded:", job_url)
+            await page.goto(url)
+            print("URL Loaded:", url)
 
             try:
                 await page.waitForSelector(
@@ -126,13 +151,16 @@ class LinkedInJobApplicationService:
                 await browser.close()
                 return Error("This system only allows one application per job. This job has already been applied to.", 500)
 
-            await asyncio.sleep(2)
-            await page.click('button.jobs-apply-button.artdeco-button.artdeco-button--3.artdeco-button--primary.ember-view')
-            print("Clicked 'Easy Apply' button.")
+            apply_buttons = await page.querySelector('button.jobs-apply-button.artdeco-button.artdeco-button--3.artdeco-button--primary.ember-view')
+            html_content = await page.evaluate('(element) => element.outerHTML', apply_buttons)
+            print(f"HTML of the first 'Easy Apply' button:\n{html_content}\n")
+            if apply_buttons:
+                await apply_buttons.click()
+            else:
+                print("No 'Easy Apply' button found.")
 
             await page.waitForSelector('.artdeco-modal__content', {'timeout': 20000})
             print("Modal opened.")
-
 
             modal_selector = 'div.artdeco-modal.artdeco-modal--layer-default.jobs-easy-apply-modal'
             while await page.querySelector(modal_selector):
