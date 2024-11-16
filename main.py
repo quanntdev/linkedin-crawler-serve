@@ -12,7 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 
-app = FastAPI()
+app = FastAPI( title = "ABM",
+    redirect_slashes=False)
 
 app.add_middleware(
     CORSMiddleware,
