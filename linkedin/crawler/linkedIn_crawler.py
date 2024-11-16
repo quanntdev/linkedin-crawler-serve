@@ -37,6 +37,8 @@ class LinkedIn:
         response = session.get(url, headers={'User-Agent': 'Mozilla/5.0'})
         soup = BeautifulSoup(response.content, 'html.parser')
 
+        print("Start get Data")
+
         job_url = ""
         job_title = ""
         company_url = ""
@@ -93,6 +95,7 @@ class LinkedIn:
             "skills": skills,
             "easy_apply": easy_apply
         }
+        print("End get Data")
         return payload
 
 
