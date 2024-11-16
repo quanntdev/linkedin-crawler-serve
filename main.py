@@ -41,11 +41,11 @@ class JobApplicationRequest(BaseModel):
 async def healthChecker():
     return Success("API V1 is running", [])
 
-@app.post("/get-job-detail/")
+@app.post("/get-job-detail")
 async def api_print_url(request: URLRequest):
     return  await getJobDetail(request.url)
 
-@app.post("/upload-pdf/")
+@app.post("/upload-pdf")
 async def upload_pdf(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
@@ -71,7 +71,7 @@ async def download_pdf(pdf_id: str):
 
     return FileResponse(file_path, media_type="application/pdf", filename=f"{pdf_id}.pdf")
 
-@app.post("/upload-pdf/")
+@app.post("/upload-pdf")
 async def upload_pdf(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
@@ -101,7 +101,7 @@ async def show_image(imgId: str):
     return FileResponse(image_path, media_type=media_type, headers={"Content-Disposition": "inline"})
 
 
-@app.post("/apply-job/")
+@app.post("/apply-job")
 async def apply_job(request: JobApplicationRequest):
     try:
         screenshot_uid = await job_application_service.apply_to_job(request.job_url, request.cv_id)
